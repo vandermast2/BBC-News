@@ -1,0 +1,130 @@
+apply plugin: 'com.android.application'
+
+apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlin-kapt'
+
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "com.breez.testapplication"
+        minSdkVersion 21
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+        }
+
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    flavorDimensions "default"
+    productFlavors {
+        dev {
+            dimension "default"
+            applicationIdSuffix ".dev"
+            resValue "string", "app_name", "Test Application BBC.DEV"
+            buildConfigField 'String', 'API_BASE_URL', '"https://newsapi.org"'
+            buildConfigField 'String', 'TOKEN', '"e3a190abf8e34f9ea1052cf52912bc36"'
+        }
+        devTest {
+            dimension "default"
+            resValue "string", "app_name", "Test Application BBC.Test"
+            applicationIdSuffix ".devTest"
+            buildConfigField 'String', 'API_BASE_URL', '"https://newsapi.org"'
+            buildConfigField 'String', 'TOKEN', '"e3a190abf8e34f9ea1052cf52912bc36"'
+        }
+        prodTest {
+            dimension "default"
+            resValue "string", "app_name", "Test Application BBC.ProdTest"
+            applicationIdSuffix ".prodTest"
+            buildConfigField 'String', 'API_BASE_URL', '"https://newsapi.org"'
+            buildConfigField 'String', 'TOKEN', '"e3a190abf8e34f9ea1052cf52912bc36"'
+        }
+        prod {
+            dimension "default"
+            applicationIdSuffix ".prod"
+            resValue "string", "app_name", "Test Application BBC"
+            buildConfigField 'String', 'API_BASE_URL', '"https://newsapi.org"'
+            buildConfigField 'String', 'TOKEN', '"e3a190abf8e34f9ea1052cf52912bc36"'
+        }
+        android.applicationVariants.all { variant ->
+            variant.outputs.all {
+
+                def SEP = "_"
+                def flavor = variant.productFlavors[0].name
+                def buildType = variant.variantData.variantConfiguration.buildType.name
+                def version = variant.versionName
+                def versionCode = variant.versionCode
+                def date = new Date()
+                def formattedDate = date.format('dd-MM-yyyy-HH_mm')
+
+                outputFileName = "${flavor}${SEP}${buildType}${SEP}${version}${SEP}${versionCode}${SEP}${formattedDate}.apk"
+            }
+        }
+    }
+
+    dataBinding {
+        enabled = true
+    }
+}
+
+androidExtensions {
+    //For LayoutContainer in MyViewHolder to provide
+    // Android Extensions-style view access
+    experimental = true
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'androidx.appcompat:appcompat:1.1.0-alpha01'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha3'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0-alpha01'
+
+    def stetho_ver = '1.5.0'
+    implementation "com.facebook.stetho:stetho:$stetho_ver"
+    implementation "com.facebook.stetho:stetho-okhttp3:$stetho_ver"
+
+    implementation 'com.jakewharton.timber:timber:4.7.1'
+
+    implementation 'com.uphyca:stetho_realm:2.2.2'
+
+    def retrofit_version = '2.4.0'
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+
+    implementation 'com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2'
+
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.0.1'
+
+    def ok_http_version = '3.8.1'
+    implementation "com.squareup.okhttp3:logging-interceptor:$ok_http_version"
+
+    def dagger_version = '2.16'
+    implementation "com.google.dagger:dagger:$dagger_version"
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
+
+    implementation 'com.github.glomadrian:loadingballs:1.1@aar'
+
+    implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'android.arch.paging:runtime:1.0.1'
+
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test:runner:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+}
